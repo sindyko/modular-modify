@@ -13,7 +13,7 @@
 
 - [Установка](#Установка)
 - [Использование](#Использование)
-- [Сравнение с `internachi/modular`](#Сравнение-с-`internachi/modular`)
+- [Сравнение с `internachi/modular`](#Сравнение)
 
 ## Установка
 
@@ -200,7 +200,7 @@ php artisan modules:sync
  - `StubFullyQualifiedTestCaseBase`
  - `StubTestCaseBase`
 
-## Сравнение с `internachi/modular`
+## Сравнение
 
 [InterNACHI/modular](https://github.com/InterNACHI/modular) - Это замечательный пакет для старта, но для решения задач, 
 которые стояли перед нами, его функционала оказалось недостаточно. Было принято решение создать форк и модифицировать 
