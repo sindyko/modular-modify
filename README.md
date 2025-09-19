@@ -11,9 +11,9 @@
 что позволяет лучше организовать крупные проекты. Эти модули используют существующую
 [Laravel package system](https://laravel.com/docs/11.x/packages), и следуют существующим соглашениям Laravel.
 
-- [Установка](#installation)
-- [Usage](#usage)
-- [Comparison to `nwidart/laravel-modules`](#comparison-to-nwidartlaravel-modules)
+- [Установка](#Установка)
+- [Usage](#Использование)
+- [Сравнение с `internachi/modular`](#Сравнение с `internachi/modular`)
 
 ## Установка
 
