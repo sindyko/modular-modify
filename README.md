@@ -20,7 +20,7 @@
 Для начала работы выполните:
 
 ```shell script
-composer require internachi/modular
+composer require sindyko/modular-modify
 ```
 
 Laravel автоматически обнаружит пакет, и всё будет настроено автоматически.
