@@ -12,8 +12,8 @@
 [Laravel package system](https://laravel.com/docs/11.x/packages), и следуют существующим соглашениям Laravel.
 
 - [Установка](#Установка)
-- [Usage](#Использование)
-- [Сравнение с `internachi/modular`](#Сравнение с `internachi/modular`)
+- [Использование](#Использование)
+- [Сравнение с `internachi/modular`](#Сравнение-с-`internachi/modular`)
 
 ## Установка
 
