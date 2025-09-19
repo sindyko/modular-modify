@@ -1,98 +1,51 @@
-<img alt="Modular" src="art/modular.png" width="100%" />
 
-# `internachi/modular`
+# `sindyko/modular-modify`
 
-<div>
-	<a href="https://github.com/InterNACHI/modular/actions/workflows/phpunit.yml" target="_blank">
-		<img 
-			src="https://github.com/InterNACHI/modular/actions/workflows/phpunit.yml/badge.svg" 
-			alt="Build Status" 
-		/>
-	</a>
-	<a href="https://codeclimate.com/github/InterNACHI/modular/test_coverage" target="_blank">
-		<img 
-			src="https://api.codeclimate.com/v1/badges/dd927802d52f4f75ea6c/test_coverage" 
-			alt="Coverage Status" 
-		/>
-	</a>
-	<a href="https://packagist.org/packages/internachi/modular" target="_blank">
-        <img 
-            src="https://poser.pugx.org/internachi/modular/v/stable" 
-            alt="Latest Stable Release" 
-        />
-	</a>
-	<a href="./LICENSE" target="_blank">
-        <img 
-            src="https://poser.pugx.org/internachi/modular/license" 
-            alt="MIT Licensed" 
-        />
-    </a>
-    <a href="https://twitter.com/inxilpro" target="_blank">
-        <img 
-            src="https://img.shields.io/twitter/follow/inxilpro?style=social" 
-            alt="Follow @inxilpro on Twitter" 
-        />
-    </a>
-    <a href="https://any.dev/@chris" target="_blank">
-        <img 
-            src="https://img.shields.io/mastodon/follow/109584001693739813?domain=https%3A%2F%2Fany.dev&style=social" 
-            alt="Follow @chris@any.dev on Mastodon" 
-        />
-    </a>
-</div>
+`sindyko/modular-modify`  это модульная система для приложений Laravel. Она использует
+[Composer path repositories](https://getcomposer.org/doc/05-repositories.md#path) для автозагрузки 
+и [Laravel package discovery](https://laravel.com/docs/11.x/packages#package-discovery) для инициализации модулей, 
+а затем предоставляет минимальный набор инструментов для заполнения любых пробелов.
 
-`internachi/modular` is a module system for Laravel applications. It uses
-[Composer path repositories](https://getcomposer.org/doc/05-repositories.md#path) for autoloading, 
-and [Laravel package discovery](https://laravel.com/docs/11.x/packages#package-discovery) for module
-initialization, and then provides minimal tooling to fill in any gaps.
+Этот проект представляет собой как набор соглашений, так и пакет. 
+Основная идея заключается в том, что вы можете создавать «модули» в отдельной директории `app-modules/`, 
+что позволяет лучше организовать крупные проекты. Эти модули используют существующую
+[Laravel package system](https://laravel.com/docs/11.x/packages), и следуют существующим соглашениям Laravel.
 
-This project is as much a set of conventions as it is a package. The fundamental idea
-is that you can create “modules” in a separate `app-modules/` directory, which allows you to
-better organize large projects. These modules use the existing 
-[Laravel package system](https://laravel.com/docs/11.x/packages), and follow existing Laravel
-conventions.
-
-- [Walkthrough Video](#walkthrough-video)
-- [Installation](#installation)
+- [Установка](#installation)
 - [Usage](#usage)
 - [Comparison to `nwidart/laravel-modules`](#comparison-to-nwidartlaravel-modules)
 
-## Walkthrough Video
+## Установка
 
-[![Intro video](https://embed-ssl.wistia.com/deliveries/98ebc7e01537a644df2d3af93d928257.jpg?image_crop_resized=1600x900&image_play_button=true&image_play_button_size=2x&image_play_button_color=1e71e7e0)](https://internachi.wistia.com/medias/pivaxithl7?wvideo=pivaxithl7)
-
-## Installation
-
-To get started, run:
+Для начала работы выполните:
 
 ```shell script
 composer require internachi/modular
 ```
 
-Laravel will auto-discover the package and everything will be automatically set up for you.
+Laravel автоматически обнаружит пакет, и всё будет настроено автоматически.
 
-### Publish the config
+### Публикация конфигурации
+Хотя это и не обязательно, настоятельно рекомендуется настроить пространство имён по умолчанию для модулей. 
+По умолчанию оно установлено как `Modules\`, что работает нормально, но усложняет извлечение модуля в отдельный пакет, 
+если вы когда-либо решите это сделать.
 
-While not required, it's highly recommended that you customize your default namespace
-for modules. By default, this is set to `Modules\`, which works just fine but makes it
-harder to extract your module to a separate package should you ever choose to.
-
-We recommend configuring a organization namespace (we use `"InterNACHI"`, for example).
-To do this, you'll need to publish the package config:
+Мы рекомендуем настроить организационное пространство имён (например, `"MyCompany"`). 
+Для этого нужно опубликовать конфигурацию пакета:
 
 ```shell script
 php artisan vendor:publish --tag=modular-config
 ```
 
-### Create a module
+### Создание модуля
 
-Next, let's create a module:
+Далее создадим модуль:
 
 ```shell script
 php artisan make:module my-module
 ```
 
-Modular will scaffold up a new module for you:
+Modular создаст новый модуль для вас:
 
 ```
 app-modules/
@@ -105,108 +58,109 @@ app-modules/
     database/
 ```
 
-It will also add two new entries to your app's `composer.json` file. The first entry registers
-`./app-modules/my-module/` as a [path repository](https://getcomposer.org/doc/05-repositories.md#path),
-and the second requires `modules/my-module:*` (like any other Composer dependency).
+Он также добавит две новые записи в файл `composer.json` вашего приложения. Первая запись регистрирует
+`./app-modules/my-module/` как [путь репозитория](https://getcomposer.org/doc/05-repositories.md#path),
+а вторая требует `modules/my-module:*` (как любую другую зависимость Composer).
 
-Modular will then remind you to perform a Composer update, so let's do that now:
+Modular напомнит вам выполнить обновление Composer, поэтому сделаем это сейчас:
 
 ```shell script
 composer update modules/my-module
 ```
 
-### Optional: Config synchronization
+### Опционально: Синхронизация конфигурации
 
-You can run the sync command to make sure that your project is set up
-for module support:
+Вы можете запустить команду синхронизации, чтобы убедиться, 
+что ваш проект настроен для поддержки модулей:
 
 ```shell script
 php artisan modules:sync
 ```
 
-This will add a `Modules` test suite to your `phpunit.xml` file (if one exists)
-and update your [PhpStorm Laravel plugin](https://plugins.jetbrains.com/plugin/7532-laravel)
-configuration (if it exists) to properly find your module's views.
+Это добавит набор тестов `Modules` в ваш файл `phpunit.xml` (если он существует) 
+и обновит конфигурацию плагина [PhpStorm Laravel plugin](https://plugins.jetbrains.com/plugin/7532-laravel)
+для правильного поиска представлений вашего модуля.
 
-It is safe to run this command at any time, as it will only add missing configurations.
-You may even want to add it to your `post-autoload-dump` scripts in your application's
-`composer.json` file.
+Безопасно запускать эту команду в любое время, так как она добавит только отсутствующие конфигурации. 
+Вы даже можете добавить её в скрипты  `post-autoload-dump` в файле
+`composer.json` вашего приложения.
 
-## Usage
+## Использование
 
-All modules follow existing Laravel conventions, and auto-discovery 
-should work as expected in most cases:
+Все модули следуют существующим соглашениям Laravel, 
+и автоматическое обнаружение должно работать как ожидается в большинстве случаев:
 
-- Commands are auto-registered with Artisan
-- Migrations will be run by the Migrator
-- Factories are auto-loaded for `factory()`
-- Policies are auto-discovered for your Models
-- Blade components will be auto-discovered
-- Event listeners will be auto-discovered
+- Команды автоматически регистрируются с помощью Artisan
+- Миграции будут выполняться с помощью Migrator
+- Фабрики автоматически загружаются для `factory()`
+- Политики автоматически обнаруживаются для ваших моделей
+- Компоненты Blade будут автоматически обнаружены
+- Слушатели событий будут автоматически обнаружены
 
-### Commands
+### Команды
 
-#### Package Commands
+#### Команды пакета
 
-We provide a few helper commands:
+Мы предоставляем несколько вспомогательных команд:
 
-- `php artisan make:module`  — scaffold a new module
-- `php artisan modules:cache` — cache the loaded modules for slightly faster auto-discovery
-- `php artisan modules:clear` — clear the module cache
-- `php artisan modules:sync`  — update project configs (like `phpunit.xml`) with module settings
-- `php artisan modules:list`  — list all modules
+- `php artisan make:module`  — создание нового модуля
+- `php artisan modules:cache` — кэширование загруженных модулей для немного более быстрого автообнаружения
+- `php artisan modules:clear` — очистка кэша модулей
+- `php artisan modules:sync`  — обновление конфигураций проекта (например `phpunit.xml`) с помощью настроек модуля
+- `php artisan modules:list`  — список всех модулей
 
-#### Laravel “`make:`” Commands
+#### Laravel “`make:`” команды
 
-We also add a `--module=` option to most Laravel `make:` commands so that you can
-use all the existing tooling that you know. The commands themselves are exactly the
-same, which means you can use your [custom stubs](https://laravel.com/docs/11.x/artisan#stub-customization)
-and everything else Laravel provides:
+Мы также добавляем опцию `--module=` к большинству команд Laravel `make:`, чтобы вы могли использовать 
+все существующие инструменты, которые вы знаете. Сами команды остаются такими же, 
+что означает, что вы можете использовать свои [пользовательские заготовки](https://laravel.com/docs/11.x/artisan#stub-customization) и всё остальное, 
+что предоставляет Laravel:
 
-- `php artisan make:cast MyModuleCast --module=[module name]`
-- `php artisan make:controller MyModuleController --module=[module name]`
-- `php artisan make:command MyModuleCommand --module=[module name]`
-- `php artisan make:component MyModuleComponent --module=[module name]`
-- `php artisan make:channel MyModuleChannel --module=[module name]`
-- `php artisan make:event MyModuleEvent --module=[module name]`
-- `php artisan make:exception MyModuleException --module=[module name]`
-- `php artisan make:factory MyModuleFactory --module=[module name]`
-- `php artisan make:job MyModuleJob --module=[module name]`
-- `php artisan make:listener MyModuleListener --module=[module name]`
-- `php artisan make:mail MyModuleMail --module=[module name]`
-- `php artisan make:middleware MyModuleMiddleware --module=[module name]`
-- `php artisan make:model MyModule --module=[module name]`
-- `php artisan make:notification MyModuleNotification --module=[module name]`
-- `php artisan make:observer MyModuleObserver --module=[module name]`
-- `php artisan make:policy MyModulePolicy --module=[module name]`
-- `php artisan make:provider MyModuleProvider --module=[module name]`
-- `php artisan make:request MyModuleRequest --module=[module name]`
-- `php artisan make:resource MyModule --module=[module name]`
-- `php artisan make:rule MyModuleRule --module=[module name]`
-- `php artisan make:seeder MyModuleSeeder --module=[module name]`
-- `php artisan make:test MyModuleTest --module=[module name]`
+- `php artisan make:cast MyModuleCast --module=[название модуля]`
+- `php artisan make:controller MyModuleController --module=[название модуля]`
+- `php artisan make:command MyModuleCommand --module=[название модуля]`
+- `php artisan make:component MyModuleComponent --module=[название модуля]`
+- `php artisan make:channel MyModuleChannel --module=[название модуля]`
+- `php artisan make:event MyModuleEvent --module=[название модуля]`
+- `php artisan make:exception MyModuleException --module=[название модуля]`
+- `php artisan make:factory MyModuleFactory --module=[название модуля]`
+- `php artisan make:job MyModuleJob --module=[название модуля]`
+- `php artisan make:listener MyModuleListener --module=[название модуля]`
+- `php artisan make:mail MyModuleMail --module=[название модуля]`
+- `php artisan make:middleware MyModuleMiddleware --module=[название модуля]`
+- `php artisan make:model MyModule --module=[название модуля]`
+- `php artisan make:notification MyModuleNotification --module=[название модуля]`
+- `php artisan make:observer MyModuleObserver --module=[название модуля]`
+- `php artisan make:policy MyModulePolicy --module=[название модуля]`
+- `php artisan make:provider MyModuleProvider --module=[название модуля]`
+- `php artisan make:request MyModuleRequest --module=[название модуля]`
+- `php artisan make:resource MyModule --module=[название модуля]`
+- `php artisan make:rule MyModuleRule --module=[название модуля]`
+- `php artisan make:seeder MyModuleSeeder --module=[название модуля]`
+- `php artisan make:test MyModuleTest --module=[название модуля]`
 
-#### Other Laravel Commands
+#### Другие Laravel-команды
 
-In addition to adding a `--module` option to most `make:` commands, we’ve also added the same
-option to the `db:seed` command. If you pass the `--module` option to `db:seed`, it will look
-for your seeder within your module namespace:
+В дополнение к добавлению опции `--module` к большинству команд `make:`, 
+мы также добавили ту же опцию к команде `db:seed`. Если вы передадите опцию `--module` команде `db:seed`, 
+она будет искать ваш сидер в пространстве имён модуля:
 
-- `php artisan db:seed --module=[module name]` will try to call `Modules\MyModule\Database\Seeders\DatabaseSeeder`
-- `php artisan db:seed --class=MySeeder --module=[module name]` will try to call `Modules\MyModule\Database\Seeders\MySeeder`
+- `php artisan db:seed --module=[название модуля]` попытается вызвать `Modules\MyModule\Database\Seeders\DatabaseSeeder`
+- `php artisan db:seed --class=MySeeder --module=[название модуля]` попытается вызвать `Modules\MyModule\Database\Seeders\MySeeder`
 
-#### Vendor Commands
+#### Команды сторонних разработчиков
 
-We can also add the `--module` option to commands in 3rd-party packages. The first package
-that we support is Livewire. If you have Livewire installed, you can run:
+Мы также можем добавить опцию `--module` к командам в сторонних пакетах. Первый пакет, который мы поддерживаем, 
+— это Livewire. Если у вас установлен Livewire, вы можете запустить:
 
-- `php artisan make:livewire counter --module=[module name]`
+- `php artisan make:livewire counter --module=[название модуля]`
 
-### Blade Components
+### Компоненты Blade
 
-Your [Laravel Blade components](https://laravel.com/docs/blade#components) will be
-automatically registered for you under a [component namespace](https://laravel.com/docs/9.x/blade#manually-registering-package-components).
-A few examples:
+Ваши [компоненты Laravel Blade](https://laravel.com/docs/blade#components) будут автоматически зарегистрированы для вас под 
+[пространством имён](https://laravel.com/docs/9.x/blade#manually-registering-package-components) компонента. 
+Несколько примеров:
+
 
 | File                                                               | Component                      |
 |--------------------------------------------------------------------|--------------------------------|
@@ -217,23 +171,22 @@ A few examples:
 | `app-modules/demo/resources/components/anonymous/index.blade.php`  | `<x-demo::anonymous />`        |
 | `app-modules/demo/resources/components/anonymous/nested.blade.php` | `<x-demo::anonymous.nested />` |
 
-### Translations
+### Локализация
 
-Your [Laravel Translations](https://laravel.com/docs/11.x/localization#defining-translation-strings) will also
-be automatically registered under a component namespace for you. For example, if you have a translation file
-at:
+Ваши [переводы Laravel](https://laravel.com/docs/11.x/localization#defining-translation-strings) также будут автоматически зарегистрированы под пространством имён компонента. 
+Например, если у вас есть файл перевода по адресу:
 
 `app-modules/demo/resources/lang/en/messages.php`
 
-You could access those translations with: `__('demo::messages.welcome');`
+Вы можете получить доступ к этим переводам с помощью: `__('demo::messages.welcome');`
 
-### Customizing the Default Module Structure
+### Настройка структуры модуля по умолчанию
 
-When you call `make:module`, Modular will scaffold some basic boilerplate for you. If you 
-would like to customize this behavior, you can do so by publishing the `app-modules.php`
-config file and adding your own stubs.
+Когда вы вызываете `make:module`, Modular создаёт базовую структуру для вас. Если вы хотите настроить это поведение, 
+вы можете опубликовать конфигурационный файл `app-modules.php`
+и добавить свои собственные заготовки.
 
-Both filenames and file contents support a number of placeholders. These include:
+Имена файлов и содержимое файлов поддерживают ряд заполнителей. Среди них:
 
  - `StubBasePath`
  - `StubModuleNamespace`
@@ -247,18 +200,8 @@ Both filenames and file contents support a number of placeholders. These include
  - `StubFullyQualifiedTestCaseBase`
  - `StubTestCaseBase`
 
-## Comparison to `nwidart/laravel-modules`
+## Сравнение с `internachi/modular`
 
-[Laravel Modules](https://nwidart.com/laravel-modules) is a great package that’s been
-around since 2016 and is used by 1000's of projects. The main reason we decided to build
-our own module system rather than using `laravel-modules` comes down to two decisions:
-
-1. We wanted something that followed Laravel conventions rather than using its own
-   directory structure/etc.
-2. We wanted something that felt “lighter weight”
-
-If you are building a CMS that needs to support 3rd-party modules that can be dynamically
-enabled and disabled, Laravel Modules will be a better fit.
-
-On the other hand, if you're mostly interested in modules for organization, and want to
-stick closely to Laravel conventions, we’d highly recommend giving InterNACHI/Modular a try!
+[InterNACHI/modular](https://github.com/InterNACHI/modular) - Это замечательный пакет для старта, но для решения задач, 
+которые стояли перед нами, его функционала оказалось недостаточно. Было принято решение создать форк и модифицировать 
+его под наши потребности.
