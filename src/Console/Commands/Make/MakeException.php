@@ -1,6 +1,6 @@
 <?php
 
-namespace InterNACHI\Modular\Console\Commands\Make;
+namespace Sindyko\ModularModify\Console\Commands\Make;
 
 use Illuminate\Foundation\Console\ExceptionMakeCommand;
 

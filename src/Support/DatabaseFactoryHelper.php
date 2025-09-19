@@ -1,6 +1,6 @@
 <?php
 
-namespace InterNACHI\Modular\Support;
+namespace Sindyko\ModularModify\Support;
 
 use Closure;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -11,12 +11,12 @@ use ReflectionClass;
 class DatabaseFactoryHelper
 {
 	protected ?string $namespace = null;
-	
+
 	public function __construct(
 		protected ModuleRegistry $registry
 	) {
 	}
-	
+
 	public function resetResolvers(): void
 	{
 		if (version_compare(Application::VERSION, '11.43.0', '>=')) {
@@ -27,7 +27,7 @@ class DatabaseFactoryHelper
 			$this->unsetProperty(Factory::class, 'factoryNameResolver');
 		}
 	}
-	
+
 	public function modelNameResolver(): Closure
 	{
 		return function(Factory $factory) {
@@ -37,7 +37,7 @@ class DatabaseFactoryHelper
 					->replaceLast('Factory', '')
 					->prepend($module->qualify('Models'), '\\');
 			}
-			
+
 			// Temporarily disable the modular resolver if we're not in a module
 			try {
 				$this->unsetProperty(Factory::class, 'modelNameResolver');
@@ -48,7 +48,7 @@ class DatabaseFactoryHelper
 			}
 		};
 	}
-	
+
 	public function factoryNameResolver(): Closure
 	{
 		return function($model_name) {
@@ -56,10 +56,10 @@ class DatabaseFactoryHelper
 				$model_name = Str::startsWith($model_name, $module->qualify('Models\\'))
 					? Str::after($model_name, $module->qualify('Models\\'))
 					: Str::after($model_name, $module->namespace());
-				
+
 				return $module->qualify($this->namespace().$model_name.'Factory');
 			}
-			
+
 			// Temporarily disable the modular resolver if we're not in a module
 			try {
 				$this->unsetProperty(Factory::class, 'factoryNameResolver');
@@ -69,7 +69,7 @@ class DatabaseFactoryHelper
 			}
 		};
 	}
-	
+
 	/**
 	 * Because Factory::$namespace is protected, we need to access it via reflection.
 	 */
@@ -77,13 +77,13 @@ class DatabaseFactoryHelper
 	{
 		return $this->namespace ??= $this->getProperty(Factory::class, 'namespace');
 	}
-	
+
 	protected function getProperty($target, $property)
 	{
 		$reflection = new ReflectionClass($target);
 		return $reflection->getStaticPropertyValue($property);
 	}
-	
+
 	protected function unsetProperty($target, $property): void
 	{
 		$reflection = new ReflectionClass($target);

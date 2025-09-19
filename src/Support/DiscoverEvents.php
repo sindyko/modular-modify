@@ -1,8 +1,8 @@
 <?php
 
-namespace InterNACHI\Modular\Support;
+namespace Sindyko\ModularModify\Support;
 
-use InterNACHI\Modular\Support\Facades\Modules;
+use Sindyko\ModularModify\Support\Facades\Modules;
 use SplFileInfo;
 
 class DiscoverEvents extends \Illuminate\Foundation\Events\DiscoverEvents
@@ -12,7 +12,7 @@ class DiscoverEvents extends \Illuminate\Foundation\Events\DiscoverEvents
 		if ($module = Modules::moduleForPath($file->getRealPath())) {
 			return $module->pathToFullyQualifiedClassName($file->getPathname());
 		}
-		
+
 		return parent::classFromFile($file, $basePath);
 	}
 }

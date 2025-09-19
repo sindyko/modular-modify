@@ -1,17 +1,17 @@
 <?php
 
-namespace InterNACHI\Modular\Console\Commands;
+namespace Sindyko\ModularModify\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use InterNACHI\Modular\Support\ModuleRegistry;
+use Sindyko\ModularModify\Support\ModuleRegistry;
 
 class ModulesClear extends Command
 {
 	protected $signature = 'modules:clear';
-	
+
 	protected $description = 'Remove the module cache file';
-	
+
 	public function handle(Filesystem $filesystem, ModuleRegistry $registry)
 	{
 		$filesystem->delete($registry->getCachePath());

@@ -1,6 +1,6 @@
 <?php
 
-namespace InterNACHI\Modular\Support;
+namespace Sindyko\ModularModify\Support;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider;
 use Illuminate\Support\Arr;
@@ -20,17 +20,17 @@ class ModularEventServiceProvider extends ServiceProvider
 		$this->app->booting(function() {
 			$events = $this->getEvents();
 			$provider = Arr::first($this->app->getProviders(EventServiceProvider::class));
-			
+
 			if (! $provider || empty($events)) {
 				return;
 			}
-			
+
 			$listen = new ReflectionProperty($provider, 'listen');
 			$listen->setAccessible(true);
 			$listen->setValue($provider, array_merge_recursive($listen->getValue($provider), $events));
 		});
 	}
-	
+
 	public function getEvents(): array
 	{
 		// If events are cached, or Modular event discovery is disabled, then we'll
@@ -38,20 +38,20 @@ class ModularEventServiceProvider extends ServiceProvider
 		if ($this->app->eventsAreCached() || ! $this->shouldDiscoverEvents()) {
 			return [];
 		}
-		
+
 		return $this->discoverEvents();
 	}
-	
+
 	public function shouldDiscoverEvents(): bool
 	{
 		return config('app-modules.should_discover_events')
 			?? $this->appIsConfiguredToDiscoverEvents();
 	}
-	
+
 	public function discoverEvents()
 	{
 		$modules = $this->app->make(ModuleRegistry::class);
-		
+
 		return $this->app->make(AutoDiscoveryHelper::class)
 			->listenerDirectoryFinder()
 			->map(fn(SplFileInfo $directory) => $directory->getPathname())
@@ -63,7 +63,7 @@ class ModularEventServiceProvider extends ServiceProvider
 				);
 			}, []);
 	}
-	
+
 	public function appIsConfiguredToDiscoverEvents(): bool
 	{
 		return collect($this->app->getProviders(EventServiceProvider::class))

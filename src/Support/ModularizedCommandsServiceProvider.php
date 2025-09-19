@@ -1,36 +1,36 @@
 <?php
 
-namespace InterNACHI\Modular\Support;
+namespace Sindyko\ModularModify\Support;
 
 use Illuminate\Console\Application;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as OriginalMakeMigrationCommand;
 use Illuminate\Support\ServiceProvider;
-use InterNACHI\Modular\Console\Commands\Database\SeedCommand;
-use InterNACHI\Modular\Console\Commands\Make\MakeCast;
-use InterNACHI\Modular\Console\Commands\Make\MakeChannel;
-use InterNACHI\Modular\Console\Commands\Make\MakeCommand;
-use InterNACHI\Modular\Console\Commands\Make\MakeComponent;
-use InterNACHI\Modular\Console\Commands\Make\MakeController;
-use InterNACHI\Modular\Console\Commands\Make\MakeEvent;
-use InterNACHI\Modular\Console\Commands\Make\MakeException;
-use InterNACHI\Modular\Console\Commands\Make\MakeFactory;
-use InterNACHI\Modular\Console\Commands\Make\MakeJob;
-use InterNACHI\Modular\Console\Commands\Make\MakeListener;
-use InterNACHI\Modular\Console\Commands\Make\MakeLivewire;
-use InterNACHI\Modular\Console\Commands\Make\MakeMail;
-use InterNACHI\Modular\Console\Commands\Make\MakeMiddleware;
-use InterNACHI\Modular\Console\Commands\Make\MakeMigration;
-use InterNACHI\Modular\Console\Commands\Make\MakeModel;
-use InterNACHI\Modular\Console\Commands\Make\MakeNotification;
-use InterNACHI\Modular\Console\Commands\Make\MakeObserver;
-use InterNACHI\Modular\Console\Commands\Make\MakePolicy;
-use InterNACHI\Modular\Console\Commands\Make\MakeProvider;
-use InterNACHI\Modular\Console\Commands\Make\MakeRequest;
-use InterNACHI\Modular\Console\Commands\Make\MakeResource;
-use InterNACHI\Modular\Console\Commands\Make\MakeRule;
-use InterNACHI\Modular\Console\Commands\Make\MakeSeeder;
-use InterNACHI\Modular\Console\Commands\Make\MakeTest;
+use Sindyko\ModularModify\Console\Commands\Database\SeedCommand;
+use Sindyko\ModularModify\Console\Commands\Make\MakeCast;
+use Sindyko\ModularModify\Console\Commands\Make\MakeChannel;
+use Sindyko\ModularModify\Console\Commands\Make\MakeCommand;
+use Sindyko\ModularModify\Console\Commands\Make\MakeComponent;
+use Sindyko\ModularModify\Console\Commands\Make\MakeController;
+use Sindyko\ModularModify\Console\Commands\Make\MakeEvent;
+use Sindyko\ModularModify\Console\Commands\Make\MakeException;
+use Sindyko\ModularModify\Console\Commands\Make\MakeFactory;
+use Sindyko\ModularModify\Console\Commands\Make\MakeJob;
+use Sindyko\ModularModify\Console\Commands\Make\MakeListener;
+use Sindyko\ModularModify\Console\Commands\Make\MakeLivewire;
+use Sindyko\ModularModify\Console\Commands\Make\MakeMail;
+use Sindyko\ModularModify\Console\Commands\Make\MakeMiddleware;
+use Sindyko\ModularModify\Console\Commands\Make\MakeMigration;
+use Sindyko\ModularModify\Console\Commands\Make\MakeModel;
+use Sindyko\ModularModify\Console\Commands\Make\MakeNotification;
+use Sindyko\ModularModify\Console\Commands\Make\MakeObserver;
+use Sindyko\ModularModify\Console\Commands\Make\MakePolicy;
+use Sindyko\ModularModify\Console\Commands\Make\MakeProvider;
+use Sindyko\ModularModify\Console\Commands\Make\MakeRequest;
+use Sindyko\ModularModify\Console\Commands\Make\MakeResource;
+use Sindyko\ModularModify\Console\Commands\Make\MakeRule;
+use Sindyko\ModularModify\Console\Commands\Make\MakeSeeder;
+use Sindyko\ModularModify\Console\Commands\Make\MakeTest;
 use Livewire\Commands as Livewire;
 
 class ModularizedCommandsServiceProvider extends ServiceProvider
@@ -60,7 +60,7 @@ class ModularizedCommandsServiceProvider extends ServiceProvider
 		'command.component.make' => MakeComponent::class,
 		'command.seed' => SeedCommand::class,
 	];
-	
+
 	public function register(): void
 	{
 		// Register our overrides via the "booted" event to ensure that we override
@@ -74,7 +74,7 @@ class ModularizedCommandsServiceProvider extends ServiceProvider
 			});
 		});
 	}
-	
+
 	protected function registerMakeCommandOverrides()
 	{
 		foreach ($this->overrides as $alias => $class_name) {
@@ -82,30 +82,30 @@ class ModularizedCommandsServiceProvider extends ServiceProvider
 			$this->app->singleton(get_parent_class($class_name), $class_name);
 		}
 	}
-	
+
 	protected function registerMigrationCommandOverrides()
 	{
 		// Laravel 8
 		$this->app->singleton('command.migrate.make', function($app) {
 			return new MakeMigration($app['migration.creator'], $app['composer']);
 		});
-		
+
 		// Laravel 9
 		$this->app->singleton(OriginalMakeMigrationCommand::class, function($app) {
 			return new MakeMigration($app['migration.creator'], $app['composer']);
 		});
 	}
-	
+
 	protected function registerLivewireOverrides(Artisan $artisan)
 	{
 		// Don't register commands if Livewire isn't installed
 		if (! class_exists(Livewire\MakeCommand::class)) {
 			return;
 		}
-		
+
 		// Replace the resolved command with our subclass
 		$artisan->resolveCommands([MakeLivewire::class]);
-		
+
 		// Ensure that if 'make:livewire' or 'livewire:make' is resolved from the container
 		// in the future, our subclass is used instead
 		$this->app->extend(Livewire\MakeCommand::class, function() {

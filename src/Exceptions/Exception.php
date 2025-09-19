@@ -1,6 +1,6 @@
 <?php
 
-namespace InterNACHI\Modular\Exceptions;
+namespace Sindyko\ModularModify\Exceptions;
 
 class Exception extends \Exception
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace InterNACHI\Modular\Console\Commands;
+namespace Sindyko\ModularModify\Console\Commands;
 
-use InterNACHI\Modular\Support\ModuleConfig;
-use InterNACHI\Modular\Support\ModuleRegistry;
+use Sindyko\ModularModify\Support\ModuleConfig;
+use Sindyko\ModularModify\Support\ModuleRegistry;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -13,21 +13,21 @@ trait Modularize
 	{
 		if ($name = $this->option('module')) {
 			$registry = $this->getLaravel()->make(ModuleRegistry::class);
-			
+
 			if ($module = $registry->module($name)) {
 				return $module;
 			}
-			
+
 			throw new InvalidOptionException(sprintf('The "%s" module does not exist.', $name));
 		}
-		
+
 		return null;
 	}
-	
+
 	protected function configure()
 	{
 		parent::configure();
-		
+
 		$this->getDefinition()->addOption(
 			new InputOption(
 				'--module',
